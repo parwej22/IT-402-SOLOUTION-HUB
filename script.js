@@ -87,8 +87,15 @@ function escapeHTML(value) {
     });
 }
 
+function validatePDF(file) {
+    if (!file) return true;
+
+    return file.type === "application/pdf" ||
+        file.name.toLowerCase().endsWith(".pdf");
+}
+
 /* =====================================
-   LOAD PAPERS
+   LOAD ALL RESOURCES
 ===================================== */
 
 async function loadPapers() {
@@ -96,15 +103,17 @@ async function loadPapers() {
         const papers = await getAllPapers();
 
         renderPapers(papers);
+        renderNotes(papers);
         renderManageList(papers);
+        renderManageNotesList(papers);
         updateYearFilter(papers);
 
         document.getElementById("storageMessage").textContent =
-            papers.length + " paper(s) available in this browser.";
+            papers.length + " resource(s) available in this browser.";
 
     } catch(error) {
         console.error(error);
-        alert("Could not load papers.");
+        alert("Could not load resources.");
     }
 }
 
@@ -117,7 +126,9 @@ function updateYearFilter(papers) {
     const selected = filter.value;
 
     const years = [...new Set(
-        papers.map(paper => String(paper.year))
+        papers
+            .filter(paper => paper.type !== "notes" && paper.year)
+            .map(paper => String(paper.year))
     )].sort((a, b) => Number(b) - Number(a));
 
     filter.innerHTML = '<option value="all">All Years</option>';
@@ -135,34 +146,47 @@ function updateYearFilter(papers) {
 }
 
 /* =====================================
-   STUDENT PAPER DISPLAY
+   RESOURCE SEARCH AND FILTER
 ===================================== */
 
-async function renderPapers(papers) {
-
-    const grid = document.getElementById("paperGrid");
-    const empty = document.getElementById("emptyMessage");
-
+function getFilteredResources(papers) {
     const search = document.getElementById("searchInput")
         .value.toLowerCase().trim();
 
     const type = document.getElementById("typeFilter").value;
     const year = document.getElementById("yearFilter").value;
 
-    const filtered = papers.filter(paper => {
+    return papers.filter(paper => {
 
-        const matchesSearch =
-            paper.title.toLowerCase().includes(search) ||
-            String(paper.year).includes(search);
+        const searchableText = paper.type === "notes"
+            ? `${paper.chapterNumber || ""} ${paper.chapterName || ""}`.toLowerCase()
+            : `${paper.title || ""} ${paper.year || ""}`.toLowerCase();
+
+        const matchesSearch = searchableText.includes(search);
 
         const matchesType =
             type === "all" || paper.type === type;
 
         const matchesYear =
-            year === "all" || String(paper.year) === year;
+            paper.type === "notes"
+                ? year === "all"
+                : year === "all" || String(paper.year) === year;
 
         return matchesSearch && matchesType && matchesYear;
     });
+}
+
+/* =====================================
+   STUDENT PAPER DISPLAY
+===================================== */
+
+function renderPapers(papers) {
+
+    const grid = document.getElementById("paperGrid");
+    const empty = document.getElementById("emptyMessage");
+
+    const filtered = getFilteredResources(papers)
+        .filter(paper => paper.type !== "notes");
 
     filtered.sort((a, b) => Number(b.year) - Number(a.year));
 
@@ -194,32 +218,85 @@ async function renderPapers(papers) {
 
             <div class="card-buttons">
 
+                ${paper.question ? `
+                    <button class="btn question-btn"
+                        data-action="view-question"
+                        data-id="${escapeHTML(paper.id)}">
+                        📖 View Questions
+                    </button>
+
+                    <button class="btn download-btn"
+                        data-action="download-question"
+                        data-id="${escapeHTML(paper.id)}">
+                        ⬇ Download Questions
+                    </button>
+                ` : ""}
+
+                ${paper.solution ? `
+                    <button class="btn solution-btn"
+                        data-action="view-solution"
+                        data-id="${escapeHTML(paper.id)}">
+                        ✅ View Solutions
+                    </button>
+
+                    <button class="btn download-btn"
+                        data-action="download-solution"
+                        data-id="${escapeHTML(paper.id)}">
+                        ⬇ Download Solutions
+                    </button>
+                ` : ""}
+
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+/* =====================================
+   STUDENT CHAPTER NOTES DISPLAY
+===================================== */
+
+function renderNotes(papers) {
+
+    const grid = document.getElementById("notesGrid");
+    const empty = document.getElementById("notesEmptyMessage");
+
+    const filtered = getFilteredResources(papers)
+        .filter(paper => paper.type === "notes");
+
+    filtered.sort((a, b) =>
+        Number(a.chapterNumber) - Number(b.chapterNumber)
+    );
+
+    grid.innerHTML = "";
+
+    empty.style.display = filtered.length ? "none" : "block";
+
+    filtered.forEach(note => {
+
+        const card = document.createElement("div");
+        card.className = "card notes-card";
+
+        card.innerHTML = `
+            <div class="card-icon">📘</div>
+
+            <h3>Chapter ${escapeHTML(note.chapterNumber)}</h3>
+
+            <p>${escapeHTML(note.chapterName)}</p>
+
+            <div class="card-buttons">
+
                 <button class="btn question-btn"
-                    data-action="view-question"
-                    data-id="${escapeHTML(paper.id)}"
-                    ${paper.question ? "" : "disabled"}>
-                    📖 View Questions
-                </button>
-
-                <button class="btn solution-btn"
-                    data-action="view-solution"
-                    data-id="${escapeHTML(paper.id)}"
-                    ${paper.solution ? "" : "disabled"}>
-                    ✅ View Solutions
+                    data-action="view-notes"
+                    data-id="${escapeHTML(note.id)}">
+                    📖 View Notes
                 </button>
 
                 <button class="btn download-btn"
-                    data-action="download-question"
-                    data-id="${escapeHTML(paper.id)}"
-                    ${paper.question ? "" : "disabled"}>
-                    ⬇ Download Questions
-                </button>
-
-                <button class="btn download-btn"
-                    data-action="download-solution"
-                    data-id="${escapeHTML(paper.id)}"
-                    ${paper.solution ? "" : "disabled"}>
-                    ⬇ Download Solutions
+                    data-action="download-notes"
+                    data-id="${escapeHTML(note.id)}">
+                    ⬇ Download Notes
                 </button>
 
             </div>
@@ -237,19 +314,28 @@ async function handlePDF(action, id) {
 
     const papers = await getAllPapers();
 
-    const paper = papers.find(item => item.id === id);
+    const paper = papers.find(item => String(item.id) === String(id));
 
     if (!paper) {
-        alert("Paper not found.");
+        alert("Resource not found.");
         return;
     }
 
     let file;
+    let fileName;
 
     if (action.includes("question")) {
         file = paper.question;
-    } else {
+        fileName = paper.title + " Questions.pdf";
+
+    } else if (action.includes("solution")) {
         file = paper.solution;
+        fileName = paper.title + " Solutions.pdf";
+
+    } else if (action.includes("notes")) {
+        file = paper.notesFile;
+        fileName = "Chapter " + paper.chapterNumber +
+            " " + paper.chapterName + " Notes.pdf";
     }
 
     if (!file) {
@@ -267,25 +353,19 @@ async function handlePDF(action, id) {
             alert("Allow pop-ups to view the PDF.");
         }
 
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
-
     } else {
 
         const link = document.createElement("a");
 
-        const suffix = action.includes("question")
-            ? "Questions"
-            : "Solutions";
-
         link.href = url;
-        link.download = paper.title + " " + suffix + ".pdf";
+        link.download = fileName;
 
         document.body.appendChild(link);
         link.click();
         link.remove();
-
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
     }
+
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 /* =====================================
@@ -302,6 +382,19 @@ document.getElementById("paperGrid").addEventListener("click", function(event) {
         .catch(error => {
             console.error(error);
             alert("Could not open or download the PDF.");
+        });
+});
+
+document.getElementById("notesGrid").addEventListener("click", function(event) {
+
+    const button = event.target.closest("button[data-action]");
+
+    if (!button || button.disabled) return;
+
+    handlePDF(button.dataset.action, button.dataset.id)
+        .catch(error => {
+            console.error(error);
+            alert("Could not open or download the Notes PDF.");
         });
 });
 
@@ -380,24 +473,13 @@ document.getElementById("logoutBtn").onclick = function() {
     adminPanel.classList.add("hidden");
 
     resetForm();
+    resetNotesForm();
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
 };
-
-/* =====================================
-   PDF VALIDATION
-===================================== */
-
-function validatePDF(file) {
-
-    if (!file) return true;
-
-    return file.type === "application/pdf" ||
-           file.name.toLowerCase().endsWith(".pdf");
-}
 
 /* =====================================
    ADD AND EDIT PAPER
@@ -439,7 +521,7 @@ document.getElementById("paperForm").onsubmit = async function(event) {
     try {
 
         const existing = id
-            ? (await getAllPapers()).find(p => p.id === id)
+            ? (await getAllPapers()).find(p => String(p.id) === String(id))
             : null;
 
         if (id && !existing) {
@@ -482,7 +564,6 @@ document.getElementById("paperForm").onsubmit = async function(event) {
     } catch(error) {
 
         console.error(error);
-
         alert("Could not save paper. Check available browser storage.");
 
     } finally {
@@ -493,23 +574,25 @@ document.getElementById("paperForm").onsubmit = async function(event) {
 };
 
 /* =====================================
-   ADMIN MANAGE LIST
+   ADMIN MANAGE PAPER LIST
 ===================================== */
 
-async function renderManageList(papers) {
+function renderManageList(papers) {
 
     const list = document.getElementById("manageList");
 
     list.innerHTML = "";
 
-    if (!papers.length) {
+    const paperList = papers.filter(paper => paper.type !== "notes");
+
+    if (!paperList.length) {
         list.innerHTML = "<p>No papers uploaded yet.</p>";
         return;
     }
 
-    papers.sort((a, b) => Number(b.year) - Number(a.year));
+    paperList.sort((a, b) => Number(b.year) - Number(a.year));
 
-    papers.forEach(paper => {
+    paperList.forEach(paper => {
 
         const item = document.createElement("div");
         item.className = "manage-item";
@@ -555,7 +638,7 @@ async function editPaper(id) {
     if (!isAdmin) return;
 
     const papers = await getAllPapers();
-    const paper = papers.find(p => p.id === id);
+    const paper = papers.find(p => String(p.id) === String(id));
 
     if (!paper) return;
 
@@ -564,11 +647,8 @@ async function editPaper(id) {
     document.getElementById("paperYear").value = paper.year;
     document.getElementById("paperType").value = paper.type;
 
-    document.getElementById("formHeading").textContent =
-        "Edit Paper";
-
-    document.getElementById("saveBtn").textContent =
-        "Update Paper";
+    document.getElementById("formHeading").textContent = "Edit Paper";
+    document.getElementById("saveBtn").textContent = "Update Paper";
 
     document.getElementById("cancelEditBtn")
         .classList.remove("hidden");
@@ -597,7 +677,6 @@ async function deletePaper(id) {
         alert("Paper deleted successfully!");
 
         await loadPapers();
-
         resetForm();
 
     } catch(error) {
@@ -609,7 +688,7 @@ async function deletePaper(id) {
 }
 
 /* =====================================
-   RESET FORM
+   RESET PAPER FORM
 ===================================== */
 
 function resetForm() {
@@ -618,14 +697,252 @@ function resetForm() {
 
     document.getElementById("editId").value = "";
 
-    document.getElementById("formHeading").textContent =
-        "Add New Paper";
-
-    document.getElementById("saveBtn").textContent =
-        "Save Paper";
+    document.getElementById("formHeading").textContent = "Add New Paper";
+    document.getElementById("saveBtn").textContent = "Save Paper";
 
     document.getElementById("cancelEditBtn")
         .classList.add("hidden");
 }
 
 document.getElementById("cancelEditBtn").onclick = resetForm;
+
+/* =====================================
+   ADD AND EDIT CHAPTER NOTES
+===================================== */
+
+document.getElementById("notesForm").onsubmit = async function(event) {
+
+    event.preventDefault();
+
+    if (!isAdmin || !db) {
+        alert("Admin login required.");
+        return;
+    }
+
+    const id = document.getElementById("notesEditId").value;
+
+    const chapterNumber =
+        document.getElementById("notesChapterNumber").value;
+
+    const chapterName =
+        document.getElementById("notesChapterName").value.trim();
+
+    const notesFile =
+        document.getElementById("notesFile").files[0];
+
+    if (!chapterNumber || !chapterName) {
+        alert("Please enter Chapter Number and Chapter Name.");
+        return;
+    }
+
+    if (notesFile && !validatePDF(notesFile)) {
+        alert("Notes file must be a PDF.");
+        return;
+    }
+
+    try {
+
+        const existing = id
+            ? (await getAllPapers()).find(p => String(p.id) === String(id))
+            : null;
+
+        if (id && (!existing || existing.type !== "notes")) {
+            alert("Notes not found.");
+            return;
+        }
+
+        if (!id && !notesFile) {
+            alert("Please upload Notes PDF.");
+            return;
+        }
+
+        const note = {
+            id: id || (
+                crypto.randomUUID
+                    ? crypto.randomUUID()
+                    : Date.now().toString()
+            ),
+
+            type: "notes",
+            chapterNumber: Number(chapterNumber),
+            chapterName: chapterName,
+
+            notesFile: notesFile || existing?.notesFile || null,
+
+            createdAt: existing?.createdAt || Date.now()
+        };
+
+        document.getElementById("saveNotesBtn").disabled = true;
+
+        await savePaper(note);
+
+        alert(id
+            ? "Chapter Notes updated successfully!"
+            : "Chapter Notes added successfully!"
+        );
+
+        resetNotesForm();
+
+        await loadPapers();
+
+    } catch(error) {
+
+        console.error(error);
+        alert("Could not save Notes. Check available browser storage.");
+
+    } finally {
+
+        document.getElementById("saveNotesBtn").disabled = false;
+
+    }
+};
+
+/* =====================================
+   ADMIN MANAGE NOTES LIST
+===================================== */
+
+function renderManageNotesList(papers) {
+
+    const list = document.getElementById("manageNotesList");
+
+    list.innerHTML = "";
+
+    const notes = papers.filter(paper => paper.type === "notes");
+
+    if (!notes.length) {
+        list.innerHTML = "<p>No chapter notes uploaded yet.</p>";
+        return;
+    }
+
+    notes.sort((a, b) =>
+        Number(a.chapterNumber) - Number(b.chapterNumber)
+    );
+
+    notes.forEach(note => {
+
+        const item = document.createElement("div");
+        item.className = "manage-item";
+
+        const info = document.createElement("div");
+
+        const heading = document.createElement("h4");
+        heading.textContent =
+            "Chapter " + note.chapterNumber + ": " + note.chapterName;
+
+        const details = document.createElement("small");
+        details.textContent = "Chapter Notes PDF";
+
+        info.append(heading, details);
+
+        const actions = document.createElement("div");
+        actions.className = "manage-actions";
+
+        const edit = document.createElement("button");
+        edit.className = "edit-btn";
+        edit.textContent = "Edit";
+        edit.onclick = () => editNotes(note.id);
+
+        const remove = document.createElement("button");
+        remove.className = "delete-btn";
+        remove.textContent = "Delete";
+        remove.onclick = () => deleteNotes(note.id);
+
+        actions.append(edit, remove);
+        item.append(info, actions);
+
+        list.appendChild(item);
+    });
+}
+
+/* =====================================
+   EDIT CHAPTER NOTES
+===================================== */
+
+async function editNotes(id) {
+
+    if (!isAdmin) return;
+
+    const papers = await getAllPapers();
+    const note = papers.find(p => String(p.id) === String(id));
+
+    if (!note || note.type !== "notes") return;
+
+    document.getElementById("notesEditId").value = note.id;
+
+    document.getElementById("notesChapterNumber").value =
+        note.chapterNumber;
+
+    document.getElementById("notesChapterName").value =
+        note.chapterName;
+
+    document.getElementById("notesFormHeading").textContent =
+        "Edit Chapter Notes";
+
+    document.getElementById("saveNotesBtn").textContent =
+        "Update Notes";
+
+    document.getElementById("cancelNotesEditBtn")
+        .classList.remove("hidden");
+
+    document.getElementById("notesForm")
+        .scrollIntoView({behavior: "smooth"});
+}
+
+/* =====================================
+   DELETE CHAPTER NOTES
+===================================== */
+
+async function deleteNotes(id) {
+
+    if (!isAdmin) return;
+
+    const confirmDelete = confirm(
+        "Are you sure you want to delete these Chapter Notes?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+
+        await deletePaperFromDB(id);
+
+        alert("Chapter Notes deleted successfully!");
+
+        await loadPapers();
+        resetNotesForm();
+
+    } catch(error) {
+
+        console.error(error);
+        alert("Could not delete Chapter Notes.");
+
+    }
+}
+
+/* =====================================
+   RESET NOTES FORM
+===================================== */
+
+function resetNotesForm() {
+
+    document.getElementById("notesForm").reset();
+
+    document.getElementById("notesEditId").value = "";
+
+    document.getElementById("notesFormHeading").textContent =
+        "Add Chapter Notes";
+
+    document.getElementById("saveNotesBtn").textContent =
+        "Save Notes";
+
+    document.getElementById("cancelNotesEditBtn")
+        .classList.add("hidden");
+}
+
+document.getElementById("cancelNotesEditBtn")
+    .onclick = resetNotesForm;
+
+/* =====================================
+   INITIALIZE
+===================================== */
+
