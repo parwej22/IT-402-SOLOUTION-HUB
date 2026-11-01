@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +15,7 @@
         <img src="1000131453.png" alt="IT402 Logo" class="logo-img">
     </div>
     <h1>IT402 Solution Hub</h1>
-    <p>CBSE Class 10 Information Technology - PYQs, Sample Papers & Solutions</p>
+    <p>CBSE Class 10 Information Technology - PYQs, Sample Papers, Chapter Notes & Solutions</p>
 </header>
 
 <main class="container">
@@ -28,14 +28,17 @@
         <button id="adminOpenBtn" class="admin-btn">⚙ Admin Panel</button>
     </div>
 
+    <!-- RESOURCE SEARCH AND FILTER -->
+
     <div class="search-area">
         <input type="search" id="searchInput"
-        placeholder="Search by title or year...">
+        placeholder="Search by title, chapter or year...">
 
         <select id="typeFilter">
             <option value="all">All Resources</option>
             <option value="pyq">Previous Year Questions</option>
             <option value="sample">Sample Papers</option>
+            <option value="notes">Chapter-wise Notes</option>
         </select>
 
         <select id="yearFilter">
@@ -47,11 +50,35 @@
         Your study materials will appear here.
     </div>
 
-    <div id="paperGrid" class="card-grid"></div>
+    <!-- PYQ AND SAMPLE PAPER SECTION -->
 
-    <div id="emptyMessage" class="empty-message">
-        No papers added yet.
-    </div>
+    <section class="resource-section">
+        <div class="section-heading">
+            <h2>📚 PYQs & Sample Papers</h2>
+            <p>Previous Year Questions and Practice Papers</p>
+        </div>
+
+        <div id="paperGrid" class="card-grid"></div>
+
+        <div id="emptyMessage" class="empty-message">
+            No papers added yet.
+        </div>
+    </section>
+
+    <!-- CHAPTER-WISE NOTES SECTION -->
+
+    <section class="resource-section notes-section">
+        <div class="section-heading">
+            <h2>📖 Chapter-wise Notes</h2>
+            <p>Class 10 Information Technology (402) Chapter Notes</p>
+        </div>
+
+        <div id="notesGrid" class="card-grid"></div>
+
+        <div id="notesEmptyMessage" class="empty-message">
+            No chapter notes added yet.
+        </div>
+    </section>
 
     <!-- ADMIN PANEL -->
 
@@ -60,10 +87,12 @@
         <div class="admin-heading">
             <div>
                 <h2>Admin Dashboard</h2>
-                <p>Manage PYQs and Sample Papers</p>
+                <p>Manage PYQs, Sample Papers and Chapter Notes</p>
             </div>
             <button id="logoutBtn" class="logout-btn">Logout</button>
         </div>
+
+        <!-- PAPER FORM -->
 
         <div class="admin-form">
 
@@ -104,6 +133,7 @@
                     <button type="submit" id="saveBtn" class="save-btn">
                         Save Paper
                     </button>
+
                     <button type="button" id="cancelEditBtn"
                     class="cancel-btn hidden">Cancel Edit</button>
                 </div>
@@ -112,8 +142,55 @@
 
         </div>
 
+        <!-- CHAPTER NOTES FORM -->
+
+        <div class="admin-form notes-admin-form">
+
+            <h3 id="notesFormHeading">Add Chapter Notes</h3>
+
+            <form id="notesForm">
+
+                <input type="hidden" id="notesEditId">
+
+                <label>Chapter Number</label>
+                <input type="number" id="notesChapterNumber"
+                min="1" placeholder="Example: 1" required>
+
+                <label>Chapter Name</label>
+                <input type="text" id="notesChapterName"
+                placeholder="Example: Communication Skills-II" required>
+
+                <label>Notes PDF</label>
+                <input type="file" id="notesFile"
+                accept=".pdf,application/pdf">
+
+                <p class="form-note">
+                    Select a PDF when adding new notes.
+                    When editing, leave the file field empty to keep the existing PDF.
+                </p>
+
+                <div class="form-buttons">
+                    <button type="submit" id="saveNotesBtn" class="save-btn">
+                        Save Notes
+                    </button>
+
+                    <button type="button" id="cancelNotesEditBtn"
+                    class="cancel-btn hidden">Cancel Edit</button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- MANAGE PAPERS -->
+
         <h3 class="manage-title">Manage Uploaded Papers</h3>
         <div id="manageList" class="manage-list"></div>
+
+        <!-- MANAGE NOTES -->
+
+        <h3 class="manage-title">Manage Chapter Notes</h3>
+        <div id="manageNotesList" class="manage-list"></div>
 
     </section>
 
@@ -130,7 +207,7 @@
         <div class="login-icon">🔐</div>
 
         <h2>Admin Login</h2>
-        <p>Only authorized administrator can manage papers.</p>
+        <p>Only authorized administrator can manage resources.</p>
 
         <form id="loginForm">
 
@@ -162,3 +239,4 @@
 
 </body>
 </html>
+```
