@@ -1,4 +1,10 @@
 
+/* =====================================
+   IT402 SOLUTION HUB
+   COMPLETE UPDATED STYLE
+   PYQ + SAMPLE PAPERS + CHAPTER NOTES
+===================================== */
+
 * {
     box-sizing: border-box;
 }
@@ -11,7 +17,9 @@ body {
     color: #263747;
 }
 
-/* HEADER */
+/* =====================================
+   HEADER
+===================================== */
 
 header {
     background: linear-gradient(135deg, #203c59, #294968);
@@ -48,7 +56,9 @@ header p {
     margin: 8px 0;
 }
 
-/* MAIN */
+/* =====================================
+   MAIN CONTAINER
+===================================== */
 
 .container {
     max-width: 1250px;
@@ -83,9 +93,16 @@ header p {
     padding: 12px 20px;
     cursor: pointer;
     font-weight: bold;
+    transition: 0.2s;
 }
 
-/* SEARCH */
+.admin-btn:hover {
+    background: #168fe5;
+}
+
+/* =====================================
+   SEARCH AREA
+===================================== */
 
 .search-area {
     display: grid;
@@ -103,6 +120,12 @@ input, select {
     background: white;
 }
 
+input:focus, select:focus {
+    outline: none;
+    border-color: #168fe5;
+    box-shadow: 0 0 0 3px #168fe522;
+}
+
 .notice {
     background: #e5f2ff;
     color: #24577d;
@@ -112,7 +135,61 @@ input, select {
     font-size: 14px;
 }
 
-/* PAPER CARDS */
+/* =====================================
+   RESOURCE SECTION
+===================================== */
+
+.resource-section {
+    margin-top: 35px;
+}
+
+.section-heading {
+    padding: 18px 22px;
+    background: white;
+    border-radius: 12px;
+    border-left: 5px solid #168fe5;
+    box-shadow: 0 3px 12px #0000000d;
+}
+
+.section-heading h2 {
+    color: #123d70;
+    margin: 0 0 7px;
+    font-size: 25px;
+}
+
+.section-heading p {
+    color: #718096;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* =====================================
+   CHAPTER NOTES SECTION
+===================================== */
+
+.notes-section .section-heading {
+    border-left-color: #12a45d;
+}
+
+.notes-section .section-heading h2 {
+    color: #176c49;
+}
+
+.notes-section .card-icon {
+    background: linear-gradient(135deg, #12a45d, #087c49);
+}
+
+.notes-card {
+    border-top: 4px solid #12a45d;
+}
+
+.notes-card h3 {
+    color: #176c49;
+}
+
+/* =====================================
+   PAPER AND NOTES CARDS
+===================================== */
 
 .card-grid {
     display: grid;
@@ -129,6 +206,7 @@ input, select {
     box-shadow: 0 4px 12px #00000012;
     border: 1px solid #e1eaf2;
     transition: 0.3s;
+    min-width: 0;
 }
 
 .card:hover {
@@ -153,6 +231,7 @@ input, select {
     color: #123d70;
     font-size: 21px;
     line-height: 1.4;
+    overflow-wrap: anywhere;
 }
 
 .card p {
@@ -172,6 +251,10 @@ input, select {
     margin: 5px;
 }
 
+/* =====================================
+   CARD BUTTONS
+===================================== */
+
 .card-buttons {
     display: flex;
     flex-direction: column;
@@ -181,6 +264,7 @@ input, select {
 
 .btn {
     display: block;
+    width: 100%;
     padding: 12px;
     color: white;
     border-radius: 9px;
@@ -215,7 +299,9 @@ input, select {
     transform: none;
 }
 
-/* EMPTY MESSAGE */
+/* =====================================
+   EMPTY MESSAGE
+===================================== */
 
 .empty-message {
     display: none;
@@ -227,7 +313,9 @@ input, select {
     margin-top: 20px;
 }
 
-/* ADMIN PANEL */
+/* =====================================
+   ADMIN PANEL
+===================================== */
 
 .admin-panel {
     background: white;
@@ -264,16 +352,22 @@ input, select {
     cursor: pointer;
 }
 
+/* =====================================
+   ADMIN FORMS
+===================================== */
+
 .admin-form {
     background: #f4f8fc;
     padding: 22px;
     border-radius: 12px;
     margin-top: 20px;
+    border: 1px solid #e0eaf4;
 }
 
 .admin-form h3 {
     color: #123d70;
     margin-top: 0;
+    font-size: 21px;
 }
 
 .admin-form label,
@@ -289,16 +383,43 @@ input, select {
     margin-bottom: 5px;
 }
 
+.admin-form input[type="file"] {
+    background: white;
+    cursor: pointer;
+}
+
 .form-note {
     color: #68788a;
     font-size: 13px;
     line-height: 1.5;
 }
 
+/* =====================================
+   NOTES ADMIN FORM
+===================================== */
+
+.notes-admin-form {
+    border-top: 4px solid #12a45d;
+}
+
+.notes-admin-form h3 {
+    color: #176c49;
+}
+
+.notes-admin-form input:focus {
+    border-color: #12a45d;
+    box-shadow: 0 0 0 3px #12a45d20;
+}
+
+/* =====================================
+   FORM BUTTONS
+===================================== */
+
 .form-buttons {
     display: flex;
     gap: 10px;
     margin-top: 15px;
+    flex-wrap: wrap;
 }
 
 .save-btn, .cancel-btn {
@@ -307,6 +428,7 @@ input, select {
     padding: 12px 22px;
     cursor: pointer;
     font-weight: bold;
+    transition: 0.2s;
 }
 
 .save-btn {
@@ -314,14 +436,33 @@ input, select {
     color: white;
 }
 
+.save-btn:hover {
+    background: #087c49;
+}
+
 .cancel-btn {
     background: #64748b;
     color: white;
 }
 
+.cancel-btn:hover {
+    background: #475569;
+}
+
+.save-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* =====================================
+   MANAGE LIST
+===================================== */
+
 .manage-title {
     margin-top: 30px;
     color: #123d70;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e4edf5;
 }
 
 .manage-item {
@@ -334,15 +475,23 @@ input, select {
     border-radius: 9px;
     margin-top: 10px;
     flex-wrap: wrap;
+    background: #fbfdff;
 }
 
 .manage-item h4 {
     margin: 0 0 5px;
+    color: #234c70;
+    overflow-wrap: anywhere;
+}
+
+.manage-item small {
+    color: #718096;
 }
 
 .manage-actions {
     display: flex;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .edit-btn, .delete-btn {
@@ -351,6 +500,7 @@ input, select {
     padding: 9px 13px;
     color: white;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .edit-btn {
@@ -361,7 +511,17 @@ input, select {
     background: #e74c3c;
 }
 
-/* LOGIN MODAL */
+.edit-btn:hover {
+    background: #0877c5;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+/* =====================================
+   LOGIN MODAL
+===================================== */
 
 .modal {
     position: fixed;
@@ -422,15 +582,25 @@ input, select {
     font-weight: bold;
 }
 
+.login-btn:hover {
+    background: #0877c5;
+}
+
 .error-message {
     color: #e74c3c !important;
 }
+
+/* =====================================
+   HIDDEN ELEMENTS
+===================================== */
 
 .hidden {
     display: none !important;
 }
 
-/* FOOTER */
+/* =====================================
+   FOOTER
+===================================== */
 
 footer {
     text-align: center;
@@ -441,22 +611,48 @@ footer {
     color: #526174;
 }
 
-/* MOBILE */
+/* =====================================
+   TABLET RESPONSIVE
+===================================== */
 
 @media(max-width: 850px) {
+
     .card-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .top-bar h2 {
+        font-size: 26px;
+    }
 }
 
+/* =====================================
+   MOBILE RESPONSIVE
+===================================== */
+
 @media(max-width: 600px) {
+
     header h1 {
         font-size: 27px;
+    }
+
+    header p {
+        font-size: 14px;
+        line-height: 1.5;
     }
 
     .logo-img {
         width: 120px;
         height: 120px;
+    }
+
+    .container {
+        padding: 0 13px;
+        margin: 20px auto;
+    }
+
+    .top-bar {
+        align-items: flex-start;
     }
 
     .top-bar h2 {
@@ -469,13 +665,47 @@ footer {
 
     .card-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+
+    .card {
+        padding: 22px 16px;
     }
 
     .admin-panel {
         padding: 15px;
     }
 
+    .admin-heading {
+        align-items: flex-start;
+    }
+
     .manage-item {
         align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .manage-actions {
+        width: 100%;
+    }
+
+    .manage-actions button {
+        flex: 1;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .form-buttons button {
+        width: 100%;
+    }
+
+    .login-box {
+        padding: 25px 20px;
     }
 }
