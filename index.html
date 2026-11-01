@@ -1,455 +1,164 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>IT402 Solution Hub</title>
-
-<style>
-
-/* GENERAL */
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f1f6fb;
-    margin: 0;
-    padding: 0;
-    color: #263747;
-}
-
-/* HEADER */
-
-header {
-    background: linear-gradient(135deg, #203c59, #294968);
-    color: white;
-    text-align: center;
-    padding: 22px 15px 25px;
-    border-radius: 0 0 20px 20px;
-}
-
-.logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.logo-img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-    background: white;
-    padding: 5px;
-    border: 5px solid #168fe0;
-    box-shadow: 0 5px 18px rgba(0,0,0,0.3);
-}
-
-header h1 {
-    margin: 5px 0;
-    font-size: 38px;
-    font-weight: bold;
-}
-
-header p {
-    font-size: 17px;
-    margin: 8px 0;
-    color: #f0f5ff;
-}
-
-/* MAIN CONTAINER */
-
-.container {
-    max-width: 1250px;
-    margin: 25px auto;
-    padding: 0 20px;
-}
-
-/* SECTION TITLE */
-
-.section-title {
-    text-align: center;
-    color: #123d70;
-    font-size: 34px;
-    padding-bottom: 10px;
-    border-bottom: 4px solid #168fe0;
-    margin-bottom: 28px;
-}
-
-/* CARD GRID */
-
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-top: 25px;
-}
-
-/* CARDS */
-
-.card {
-    background: white;
-    padding: 28px 22px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.09);
-    border: 1px solid #e1eaf2;
-    transition: 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 9px 22px rgba(0,0,0,0.15);
-}
-
-/* ICONS */
-
-.card-icon {
-    width: 105px;
-    height: 105px;
-    margin: 0 auto 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    color: white;
-}
-
-.blue {
-    background: #078de5;
-}
-
-.purple {
-    background: #6045bb;
-}
-
-.orange {
-    background: #ff8800;
-}
-
-/* CARD TEXT */
-
-.card h3 {
-    color: #123d70;
-    font-size: 23px;
-    margin: 10px 0 15px;
-}
-
-.card p {
-    font-size: 16px;
-    color: #34465b;
-    line-height: 1.5;
-    min-height: 75px;
-}
-
-/* BUTTONS */
-
-.card-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 18px;
-}
-
-.btn {
-    display: block;
-    padding: 12px 15px;
-    color: white;
-    text-decoration: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.btn:hover {
-    transform: scale(1.03);
-}
-
-.question-btn {
-    background: #168fe5;
-}
-
-.question-btn:hover {
-    background: #0874c2;
-}
-
-.solution-btn {
-    background: #12a45d;
-}
-
-.solution-btn:hover {
-    background: #087d45;
-}
-
-.download-btn {
-    background: #6045bb;
-}
-
-.download-btn:hover {
-    background: #48339a;
-}
-
-/* FOOTER */
-
-footer {
-    text-align: center;
-    padding: 25px 15px;
-    margin-top: 45px;
-    background: #edf1f6;
-    border-top: 1px solid #d7e0e8;
-    color: #526174;
-    font-size: 16px;
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 850px) {
-
-    .card-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-}
-
-@media (max-width: 600px) {
-
-    header {
-        padding: 20px 10px;
-    }
-
-    .logo-img {
-        width: 120px;
-        height: 120px;
-    }
-
-    header h1 {
-        font-size: 27px;
-    }
-
-    header p {
-        font-size: 14px;
-    }
-
-    .section-title {
-        font-size: 24px;
-    }
-
-    .card-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .card {
-        padding: 25px 18px;
-    }
-
-}
-
-/* PRINT */
-
-@media print {
-
-    body {
-        background: white;
-    }
-
-    .card {
-        box-shadow: none;
-        break-inside: avoid;
-    }
-
-    .card-buttons {
-        display: none;
-    }
-
-}
-
-</style>
-
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- HEADER -->
-
 <header>
-
     <div class="logo-container">
-
-        <img src="1000131453.png"
-             alt="IT402 Solution Hub Logo"
-             class="logo-img">
-
+        <img src="1000131453.png" alt="IT402 Logo" class="logo-img">
     </div>
-
     <h1>IT402 Solution Hub</h1>
-
-    <p>
-        CBSE Class 10 Information Technology -
-        PYQs, Sample Papers & Solutions
-    </p>
-
+    <p>CBSE Class 10 Information Technology - PYQs, Sample Papers & Solutions</p>
 </header>
 
+<main class="container">
 
-<!-- MAIN CONTENT -->
+    <div class="top-bar">
+        <div>
+            <h2>Class 10 IT (402) Resources</h2>
+            <p class="subtitle">Questions, Solutions and Study Materials</p>
+        </div>
+        <button id="adminOpenBtn" class="admin-btn">⚙ Admin Panel</button>
+    </div>
 
-<div class="container">
+    <div class="search-area">
+        <input type="search" id="searchInput"
+        placeholder="Search by title or year...">
 
-    <h2 class="section-title">
-        Class 10 IT (402) Resources
-    </h2>
+        <select id="typeFilter">
+            <option value="all">All Resources</option>
+            <option value="pyq">Previous Year Questions</option>
+            <option value="sample">Sample Papers</option>
+        </select>
 
-    <div class="card-grid">
+        <select id="yearFilter">
+            <option value="all">All Years</option>
+        </select>
+    </div>
 
+    <div id="storageMessage" class="notice">
+        Your study materials will appear here.
+    </div>
 
-        <!-- CARD 1 : SAMPLE PAPERS -->
+    <div id="paperGrid" class="card-grid"></div>
 
-        <div class="card">
+    <div id="emptyMessage" class="empty-message">
+        No papers added yet.
+    </div>
 
-            <div class="card-icon blue">
-                📄
+    <!-- ADMIN PANEL -->
+
+    <section id="adminPanel" class="admin-panel hidden">
+
+        <div class="admin-heading">
+            <div>
+                <h2>Admin Dashboard</h2>
+                <p>Manage PYQs and Sample Papers</p>
             </div>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
 
-            <h3>Sample Paper Solutions</h3>
+        <div class="admin-form">
 
-            <p>
-                Access detailed CBSE Sample Paper
-                Questions, Solutions and PDF
-                Downloads.
-            </p>
+            <h3 id="formHeading">Add New Paper</h3>
 
-            <div class="card-buttons">
+            <form id="paperForm">
 
-                <a href="Sample-Questions.pdf"
-                   class="btn question-btn"
-                   target="_blank">
-                    📖 View Questions
-                </a>
+                <input type="hidden" id="editId">
 
-                <a href="Sample-Solutions.pdf"
-                   class="btn solution-btn"
-                   target="_blank">
-                    ✅ View Solutions
-                </a>
+                <label>Resource Type</label>
+                <select id="paperType" required>
+                    <option value="pyq">Previous Year Question (PYQ)</option>
+                    <option value="sample">Sample Paper</option>
+                </select>
 
-                <a href="Sample-Solutions.pdf"
-                   class="btn download-btn"
-                   download>
-                    ⬇ Download PDF
-                </a>
+                <label>Paper Title</label>
+                <input type="text" id="paperTitle"
+                placeholder="Example: CBSE IT 402 PYQ 2025" required>
 
-            </div>
+                <label>Year</label>
+                <input type="number" id="paperYear"
+                min="2000" max="2100" placeholder="2025" required>
+
+                <label>Question Paper PDF</label>
+                <input type="file" id="questionFile"
+                accept=".pdf,application/pdf">
+
+                <label>Solution PDF</label>
+                <input type="file" id="solutionFile"
+                accept=".pdf,application/pdf">
+
+                <p class="form-note">
+                    Select at least one PDF when adding a paper.
+                    When editing, leave a file field empty to keep its existing PDF.
+                </p>
+
+                <div class="form-buttons">
+                    <button type="submit" id="saveBtn" class="save-btn">
+                        Save Paper
+                    </button>
+                    <button type="button" id="cancelEditBtn"
+                    class="cancel-btn hidden">Cancel Edit</button>
+                </div>
+
+            </form>
 
         </div>
 
+        <h3 class="manage-title">Manage Uploaded Papers</h3>
+        <div id="manageList" class="manage-list"></div>
 
-        <!-- CARD 2 : PYQ -->
+    </section>
 
-        <div class="card">
+</main>
 
-            <div class="card-icon purple">
-                ❓
-            </div>
+<!-- LOGIN MODAL -->
 
-            <h3>Previous Year Questions (PYQs)</h3>
+<div id="loginModal" class="modal hidden">
 
-            <p>
-                Review past board examination
-                question papers and their detailed
-                marking scheme solutions.
-            </p>
+    <div class="login-box">
 
-            <div class="card-buttons">
+        <button id="closeLoginBtn" class="close-btn">×</button>
 
-                <a href="PYQ 2025 (1).pdf"
-                   class="btn question-btn"
-                   target="_blank">
-                    📖 View Questions
-                </a>
+        <div class="login-icon">🔐</div>
 
-                <a href="PYQ-2025-Solutions.pdf"
-                   class="btn solution-btn"
-                   target="_blank">
-                    ✅ View Solutions
-                </a>
+        <h2>Admin Login</h2>
+        <p>Only authorized administrator can manage papers.</p>
 
-                <a href="PYQ 2025 (1).pdf"
-                   class="btn download-btn"
-                   download>
-                    ⬇ Download PDF
-                </a>
+        <form id="loginForm">
 
-            </div>
+            <label>Admin ID</label>
+            <input type="text" id="adminId"
+            placeholder="Enter Admin ID" required>
 
-        </div>
+            <label>Password</label>
+            <input type="password" id="adminPassword"
+            placeholder="Enter Password" required>
 
+            <p id="loginError" class="error-message"></p>
 
-        <!-- CARD 3 : EMPLOYABILITY SKILLS -->
+            <button type="submit" class="login-btn">
+                Login
+            </button>
 
-        <div class="card">
-
-            <div class="card-icon orange">
-                💼
-            </div>
-
-            <h3>Employability Skills</h3>
-
-            <p>
-                Find important questions, short
-                notes, MCQs and quick revision
-                material for Unit 1-5.
-            </p>
-
-            <div class="card-buttons">
-
-                <a href="Employability-Questions.pdf"
-                   class="btn question-btn"
-                   target="_blank">
-                    📖 View Questions
-                </a>
-
-                <a href="Employability-Solutions.pdf"
-                   class="btn solution-btn"
-                   target="_blank">
-                    ✅ View Solutions
-                </a>
-
-                <a href="Employability-Solutions.pdf"
-                   class="btn download-btn"
-                   download>
-                    ⬇ Download PDF
-                </a>
-
-            </div>
-
-        </div>
-
+        </form>
 
     </div>
 
 </div>
 
-
-<!-- FOOTER -->
-
 <footer>
-
-    <p>
-        © 2026 IT402 Solution Hub |
-        Managed by Parwej
-    </p>
-
+    <p>© 2026 IT402 Solution Hub | Managed by Parwej</p>
 </footer>
 
+<script src="script.js"></script>
 
 </body>
 </html>
